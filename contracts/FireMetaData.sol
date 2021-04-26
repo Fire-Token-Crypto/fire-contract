@@ -18,7 +18,7 @@ abstract contract FireMetaData is IERC20Metadata {
 	/**
 	 *@dev The decimals of the token managed by the this smart contract.
 	 */
-	uint8 private _decimals = 9;
+	uint8 private _decimals = 18;
 
 	/**
 	 *@dev It returns the name of the token.
