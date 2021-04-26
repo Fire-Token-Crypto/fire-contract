@@ -80,6 +80,8 @@ contract Fire is Ownable, FireMetaData {
 	bool public isSwapAndLiquifyingEnabled = false;
 
 	bool public startTrading = false;
+	
+		bool public catchWhales = true;
 
 	IUniswapV2Router02 public immutable uniswapV2Router;
 	address public immutable uniswapV2WETHPair;
@@ -267,10 +269,22 @@ contract Fire is Ownable, FireMetaData {
 		// If this is a feeless transaction. Remove all fees and store them.
 		if (removeFees) removeAllFees();
 
+		uint256 rAmount = _reflectionFromToken(amount);
+
+		if (
+			sender != owner() &&
+			recipient != owner() &&
+			catchWhales &&
+			recipient != uniswapV2WETHPair
+		) {
+			require(
+				_reflectionBalance[recipient] + rAmount <= maxTxAmount,
+				"No whales allowed right now :)"
+			);
+		}
+
 		// Because this account comes from a excluded account to an excluded. We only to reduce it's reflections and tokens.
-		 _reflectionBalance[sender] =
-			_reflectionBalance[sender] -
-			_reflectionFromToken(amount);
+		_reflectionBalance[sender] = _reflectionBalance[sender] - rAmount;
 
 		// Calculates transaction fee
 		uint256 tax = _calculateTax(amount);
@@ -279,12 +293,12 @@ contract Fire is Ownable, FireMetaData {
 		// Since the recipient is also  excluded. We need to update his reflections and tokens.
 		_reflectionBalance[recipient] =
 			_reflectionBalance[recipient] +
-			_reflectionFromToken(amount) -
-				rTax - rTax - rTax;
-
-		_reflectionBalance[fireFund] =
-			_reflectionBalance[fireFund] +
+			rAmount -
+			rTax -
+			rTax -
 			rTax;
+
+		_reflectionBalance[fireFund] = _reflectionBalance[fireFund] + rTax;
 
 		_takeLiquidity(rTax);
 		_reflectFee(rTax, tax);
@@ -358,6 +372,13 @@ contract Fire is Ownable, FireMetaData {
    */
 	function enableTrading() external onlyOwner() {
 		startTrading = true;
+	}
+	
+		/**
+	@dev Function to allow holders to have more than 0.5% of tokens
+	 */
+	function freeWhales() external onlyOwner() {
+		catchWhales = false;
 	}
 
 	/**
