@@ -193,7 +193,7 @@ contract Fire is Ownable, FireMetaData {
 	 *@dev Removes all fees and saves them to be reinstated at a later date.
 	 */
 	function removeAllFees() private {
-		if (taxFee) return;
+		if (taxFee == 0) return;
 
 		taxFee = 0;
 	}
