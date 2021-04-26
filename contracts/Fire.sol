@@ -278,7 +278,8 @@ contract Fire is Ownable, FireMetaData {
 			recipient != uniswapV2WETHPair
 		) {
 			require(
-				_reflectionBalance[recipient] + rAmount <= maxTxAmount,
+				_tokenFromReflection(_reflectionBalance[recipient] + rAmount) <=
+					maxTxAmount,
 				"No whales allowed right now :)"
 			);
 		}
