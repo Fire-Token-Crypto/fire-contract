@@ -106,7 +106,7 @@ contract Fire is Ownable, FireMetaData {
 
 		_isExcludedFromFees[owner()] = true;
 		_isExcludedFromFees[address(this)] = true;
-		_isExcludedFromFees[fireFund] = true;
+		_isExcludedFromFees[fireFundAddress] = true;
 
 		emit Transfer(address(0), _msgSender(), _tokenSupply);
 	}
