@@ -356,7 +356,7 @@ contract Fire is Ownable, FireMetaData {
 	/**
     @dev Function to enable trading
    */
-	function enableTrading() external {
+	function enableTrading() external onlyOwner() {
 		startTrading = true;
 	}
 
